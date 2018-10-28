@@ -1,0 +1,14 @@
+version: '3' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  logger:
+    build: .
+    container_name: logger
+    labels:
+       app: logger
+    environment:
+      NODE_ENV: development
+    ports:
+      - 4002:4002
+      - 4003:4003

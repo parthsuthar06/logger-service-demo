@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Logger</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <style>
+    body
+      { color: #1a2c37;
+        font-family: 'Helvetica', sans-serif; font-size: 86%;
+        padding: 2em; }
+    #info
+      { font-size: 120%;
+        font-weight: bold; }
+    #tail
+      { border: 1px solid #ccc;
+        height: 600px;
+        width: 100%;
+        padding: 0.5em;
+        overflow: hidden;
+        position: relative;
+        overflow-y: scroll;
+        overflow-x: scroll;
+        word-wrap: inherit; }
+  </style>
+
+</head>
+<body>
+  <h1 id="info"></h1>
+  <pre id="tail"></pre>
+
+  <script>
+
+  var Application = function() {
+
+    var socket = io('http://localhost:4002');
+
+    var lines = 0;
+
+    socket.on('connect', function() {
+      console.log('Connected to:', `${socket.io.uri}`);
+    });
+    socket.on('message', function(message) {
+      if (message.filename) {
+        $('#info').html( 'Watching ' + message.filename );
+      };
+      if (message.tail) {
+        $('#tail').html( $('#tail').html() + message.tail );
+        lines++
+        $('#tail').scrollTop(lines*100)
+      }
+    });
+    
+    return {
+      socket : socket
+    };
+  };
+ 
+  $(function() { var app = Application(); });
+
+  </script>
+
+</body>
+</html>
